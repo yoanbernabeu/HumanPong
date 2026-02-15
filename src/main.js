@@ -4,6 +4,7 @@ import { initHeadTracking, stopHeadTracking, getHeadPosition, getLastHeadResults
 import { initGame, stopGame, pauseGame, resumeGame, isGamePaused, isGameRunning } from './game.js';
 import { resumeAudio, playWin, playLock } from './sound.js';
 import { startMenuBg, stopMenuBg } from './menu-bg.js';
+import { toggleMusic, isMusicPlaying } from './music.js';
 
 // Screens
 const menuScreen = document.getElementById('menu-screen');
@@ -21,6 +22,8 @@ const btnReplay = document.getElementById('btn-replay');
 const btnMenu = document.getElementById('btn-menu');
 const btnQuit = document.getElementById('btn-quit');
 const btnQuitCalib = document.getElementById('btn-quit-calib');
+const btnMusic = document.getElementById('btn-music');
+const btnMusicGame = document.getElementById('btn-music-game');
 
 // Elements
 const menuCanvas = document.getElementById('menu-canvas');
@@ -656,6 +659,19 @@ function replay() {
   startGame(currentMode);
 }
 
+// -- Music toggle --
+function updateMusicUI() {
+  const on = isMusicPlaying();
+  btnMusic.textContent = on ? 'MUSIC: ON' : 'MUSIC: OFF';
+  btnMusic.classList.toggle('active', on);
+  btnMusicGame.classList.toggle('music-on', on);
+}
+
+function handleMusicToggle() {
+  toggleMusic();
+  updateMusicUI();
+}
+
 // -- Install hint --
 const installOverlay = document.getElementById('install-overlay');
 const btnCloseInstall = document.getElementById('btn-close-install');
@@ -679,6 +695,8 @@ btnReplay.addEventListener('click', replay);
 btnMenu.addEventListener('click', goToMenu);
 btnQuit.addEventListener('click', goToMenu);
 btnQuitCalib.addEventListener('click', goToMenu);
+btnMusic.addEventListener('click', handleMusicToggle);
+btnMusicGame.addEventListener('click', handleMusicToggle);
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {

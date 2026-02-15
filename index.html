@@ -57,7 +57,10 @@
       </div>
     </div>
 
-    <button id="btn-fullscreen" class="btn-fullscreen">FULLSCREEN</button>
+    <div class="menu-bottom-row">
+      <button id="btn-music" class="btn-small">MUSIC: OFF</button>
+      <button id="btn-fullscreen" class="btn-small">FULLSCREEN</button>
+    </div>
 
     <p class="hint">Control paddles with your hand or head movement.</p>
     <p class="hint hint-desktop">Press F for fullscreen &middot; ESC to quit</p>
@@ -112,6 +115,7 @@
   <!-- Game screen -->
   <div id="game-screen" class="screen">
     <canvas id="game-canvas"></canvas>
+    <button id="btn-music-game" class="btn-quit btn-music-toggle" aria-label="Toggle music">&#9835;</button>
     <button id="btn-quit" class="btn-quit" aria-label="Back to menu">&times;</button>
   </div>
 
