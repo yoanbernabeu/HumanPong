@@ -96,9 +96,11 @@ function stopCurrentTracking() {
 
 // -- Fullscreen --
 let wasFullscreen = false;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const canFullscreen = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
 
 function isFullscreen() {
-  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  return !!(document.fullscreenElement || document.webkitFullscreenElement) || isStandalone;
 }
 
 function enterFullscreen() {
@@ -110,7 +112,9 @@ function enterFullscreen() {
 }
 
 function exitFullscreen() {
-  (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
+  }
 }
 
 function toggleFullscreen() {
@@ -119,6 +123,14 @@ function toggleFullscreen() {
   } else {
     enterFullscreen();
   }
+}
+
+// Adapt fullscreen button for devices without Fullscreen API
+if (isStandalone) {
+  btnFullscreen.style.display = 'none';
+} else if (!canFullscreen) {
+  btnFullscreen.textContent = 'ADD TO HOME SCREEN';
+  btnFullscreen.addEventListener('click', showInstallHint);
 }
 
 // -- Webcam visibility --
@@ -644,11 +656,25 @@ function replay() {
   startGame(currentMode);
 }
 
+// -- Install hint --
+const installOverlay = document.getElementById('install-overlay');
+const btnCloseInstall = document.getElementById('btn-close-install');
+
+function showInstallHint() {
+  installOverlay.classList.add('active');
+}
+
+btnCloseInstall.addEventListener('click', () => {
+  installOverlay.classList.remove('active');
+});
+
 // Button events
 btn2Players.addEventListener('click', () => startGame('2p'));
 btnVsAI.addEventListener('click', () => startGame('ai'));
 btnHead.addEventListener('click', () => startGame('head'));
-btnFullscreen.addEventListener('click', toggleFullscreen);
+if (canFullscreen) {
+  btnFullscreen.addEventListener('click', toggleFullscreen);
+}
 btnReplay.addEventListener('click', replay);
 btnMenu.addEventListener('click', goToMenu);
 btnQuit.addEventListener('click', goToMenu);

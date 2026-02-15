@@ -582,6 +582,51 @@ body.cam-visible #hand-canvas {
   z-index: 99;
 }
 
+/* Install hint overlay */
+.overlay-hint {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-hint.active {
+  display: flex;
+}
+
+.overlay-hint-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.overlay-hint-title {
+  font-size: 1rem;
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0;
+}
+
+.overlay-hint-text {
+  font-size: 0.65rem;
+  color: #ccc;
+  line-height: 2;
+}
+
+.overlay-hint-sub {
+  font-size: 0.45rem;
+  color: #555;
+}
+
 /* Rotate device overlay */
 #rotate-overlay {
   display: none;
