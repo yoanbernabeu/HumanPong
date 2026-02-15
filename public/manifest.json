@@ -1,0 +1,17 @@
+{
+  "name": "HumanPong",
+  "short_name": "HumanPong",
+  "description": "Retro Pong with Webcam Body Control",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/og.png",
+      "sizes": "1200x630",
+      "type": "image/png"
+    }
+  ]
+}

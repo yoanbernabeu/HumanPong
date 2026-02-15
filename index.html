@@ -7,6 +7,9 @@
   <meta name="description" content="Play Pong using your hands or head via webcam. Retro 80s CRT style, 2 players or vs AI. No controller needed.">
   <meta name="author" content="YoanDev & Sons">
   <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -64,6 +67,7 @@
 
   <!-- Calibration screen -->
   <div id="calibration-screen" class="screen">
+    <button id="btn-quit-calib" class="btn-quit" aria-label="Back to menu">&times;</button>
     <div id="calib-ui">
       <p class="calib-title glow" id="calib-title">Show your hands</p>
       <div class="calib-hands">
@@ -108,6 +112,7 @@
   <!-- Game screen -->
   <div id="game-screen" class="screen">
     <canvas id="game-canvas"></canvas>
+    <button id="btn-quit" class="btn-quit" aria-label="Back to menu">&times;</button>
   </div>
 
   <!-- Pause overlay -->

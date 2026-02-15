@@ -19,6 +19,8 @@ const btnHead = document.getElementById('btn-head');
 const btnFullscreen = document.getElementById('btn-fullscreen');
 const btnReplay = document.getElementById('btn-replay');
 const btnMenu = document.getElementById('btn-menu');
+const btnQuit = document.getElementById('btn-quit');
+const btnQuitCalib = document.getElementById('btn-quit-calib');
 
 // Elements
 const menuCanvas = document.getElementById('menu-canvas');
@@ -93,17 +95,29 @@ function stopCurrentTracking() {
 }
 
 // -- Fullscreen --
-function toggleFullscreen() {
-  const el = document.documentElement;
-  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+let wasFullscreen = false;
 
-  if (isFullscreen) {
-    (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
+function isFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+}
+
+function enterFullscreen() {
+  const el = document.documentElement;
+  const requestFs = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (requestFs) {
+    requestFs.call(el).catch(() => {});
+  }
+}
+
+function exitFullscreen() {
+  (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
+}
+
+function toggleFullscreen() {
+  if (isFullscreen()) {
+    exitFullscreen();
   } else {
-    const requestFs = el.requestFullscreen || el.webkitRequestFullscreen;
-    if (requestFs) {
-      requestFs.call(el).catch(() => {});
-    }
+    enterFullscreen();
   }
 }
 
@@ -156,7 +170,15 @@ async function startGame(mode) {
   showScreen(calibScreen);
   showCam();
 
+  // Camera permission dialog may kick us out of fullscreen — remember state
+  wasFullscreen = isFullscreen();
+
   await initCurrentTracking();
+
+  // Re-enter fullscreen after camera permission is granted
+  if (wasFullscreen && !isFullscreen()) {
+    enterFullscreen();
+  }
 
   calibHint.textContent = 'Waiting for detection...';
 
@@ -625,6 +647,8 @@ btnHead.addEventListener('click', () => startGame('head'));
 btnFullscreen.addEventListener('click', toggleFullscreen);
 btnReplay.addEventListener('click', replay);
 btnMenu.addEventListener('click', goToMenu);
+btnQuit.addEventListener('click', goToMenu);
+btnQuitCalib.addEventListener('click', goToMenu);
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {

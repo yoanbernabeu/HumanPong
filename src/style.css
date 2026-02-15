@@ -458,6 +458,38 @@ body.cam-visible #hand-canvas {
   border-radius: 12px;
 }
 
+/* Quit button (visible on touch devices) */
+.btn-quit {
+  display: none;
+  position: absolute;
+  top: env(safe-area-inset-top, 12px);
+  right: env(safe-area-inset-right, 12px);
+  margin: 12px;
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #555;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 60;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-quit:active {
+  color: #0f0;
+  border-color: #0f0;
+}
+
+@media (pointer: coarse) {
+  .btn-quit {
+    display: block;
+  }
+}
+
 /* Pause overlay */
 #pause-overlay {
   display: none;
