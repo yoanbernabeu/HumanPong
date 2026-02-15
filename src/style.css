@@ -715,3 +715,105 @@ body.cam-visible #hand-canvas {
     display: none;
   }
 }
+
+/* Short screens (iPhone landscape ~340px height) */
+@media (max-height: 500px) {
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .menu-section {
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .menu-label {
+    font-size: 0.45rem;
+  }
+
+  .btn-retro {
+    font-size: 0.6rem;
+    padding: 0.5rem 1.2rem;
+    min-width: 180px;
+  }
+
+  .btn-retro.btn-half {
+    min-width: 85px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.5rem;
+  }
+
+  .btn-fullscreen {
+    font-size: 0.45rem;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hint {
+    font-size: 0.4rem;
+    max-width: 350px;
+    line-height: 1.5;
+  }
+
+  .hint-desktop {
+    display: none;
+  }
+
+  .menu-footer {
+    bottom: 0.5rem;
+    font-size: 0.35rem;
+  }
+
+  /* Calibration compact */
+  .calib-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .calib-hands {
+    gap: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .calib-reticle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .calib-icon {
+    font-size: 1.5rem;
+  }
+
+  .calib-label {
+    font-size: 0.45rem;
+  }
+
+  .calib-status {
+    font-size: 0.4rem;
+  }
+
+  .calib-hint {
+    font-size: 0.45rem;
+  }
+
+  /* End screen compact */
+  .final-score {
+    font-size: 1.5rem;
+    margin: 0.8rem 0 1rem;
+  }
+
+  .pause-title {
+    font-size: 1.2rem;
+  }
+
+  .pause-text {
+    font-size: 0.55rem;
+  }
+}
