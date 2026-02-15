@@ -72,10 +72,15 @@ function sendFrame() {
 }
 
 function processResults(results) {
-  // Convert to legacy-compatible format for drawing code in main.js
+  // tasks-vision reports anatomical handedness (user's actual hand),
+  // while the old API reported the mirror-image side.
+  // Flip the label so main.js drawing code stays unchanged.
   lastResults = {
     multiHandLandmarks: results.landmarks,
-    multiHandedness: results.handedness?.map((h) => ({ label: h[0]?.categoryName })),
+    multiHandedness: results.handedness?.map((h) => {
+      const name = h[0]?.categoryName;
+      return { label: name === 'Right' ? 'Left' : 'Right' };
+    }),
   };
 
   let leftHand = null;
@@ -85,7 +90,7 @@ function processResults(results) {
     for (let i = 0; i < results.landmarks.length; i++) {
       const wrist = results.landmarks[i][0];
       const handedness = results.handedness[i]?.[0]?.categoryName;
-      if (handedness === 'Right') {
+      if (handedness === 'Left') {
         leftHand = wrist;
       } else {
         rightHand = wrist;
