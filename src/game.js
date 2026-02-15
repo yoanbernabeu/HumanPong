@@ -12,7 +12,7 @@ function paddleWidth() { return Math.max(8, Math.round(canvas.height * 0.018)); 
 function paddleMargin() { return Math.max(10, Math.round(canvas.width * 0.015)); }
 function ballRadius() { return Math.max(5, Math.round(canvas.height * 0.012)); }
 function ballInitialSpeed() { return Math.max(3.5, canvas.width * 0.004); }
-function ballSpeedIncrement() { return canvas.width * 0.00025; }
+function ballSpeedIncrement() { return canvas.width * 0.0005; }
 function ballMaxSpeed() { return canvas.width * 0.009; }
 
 let canvas, ctx;

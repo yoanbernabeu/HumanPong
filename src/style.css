@@ -47,12 +47,12 @@ body {
 }
 
 .glow {
-  color: #0f0;
+  color: #fff;
   text-shadow:
-    0 0 10px #0f0,
-    0 0 20px #0f0,
-    0 0 40px #0f0,
-    0 0 80px #0a0;
+    0 0 6px #0f0,
+    0 0 15px #0f0,
+    0 0 30px rgba(0, 170, 0, 0.5);
+  -webkit-text-stroke: 1px rgba(0, 255, 0, 0.6);
 }
 
 /* Glitch effect on menu title */
@@ -544,6 +544,7 @@ body.cam-visible #hand-canvas {
 
 .pause-title {
   font-size: 2rem;
+  letter-spacing: 3px;
   animation: pause-blink 1s ease-in-out infinite;
 }
 
@@ -566,6 +567,10 @@ body.cam-visible #hand-canvas {
 }
 
 /* End screen */
+#end-screen .title {
+  letter-spacing: 2px;
+}
+
 .final-score {
   font-size: 2.5rem;
   color: #0f0;
@@ -740,6 +745,24 @@ body.cam-visible #hand-canvas {
   }
 }
 
+/* Medium screens (iPad landscape ~700-800px height) */
+@media (max-height: 800px) {
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .glow {
+    text-shadow:
+      0 0 4px #0f0,
+      0 0 12px rgba(0, 170, 0, 0.5);
+    -webkit-text-stroke: 1px rgba(0, 255, 0, 0.5);
+  }
+
+  .final-score {
+    font-size: 2rem;
+  }
+}
+
 /* Short screens (iPhone landscape ~340px height) */
 @media (max-height: 500px) {
   .title {
@@ -750,8 +773,9 @@ body.cam-visible #hand-canvas {
 
   .glow {
     text-shadow:
-      0 0 4px #0f0,
-      0 0 8px #0f0;
+      0 0 3px #0f0,
+      0 0 6px rgba(0, 170, 0, 0.4);
+    -webkit-text-stroke: 0.5px rgba(0, 255, 0, 0.5);
   }
 
   #menu-screen .title::before,
