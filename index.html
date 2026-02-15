@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HumanPong — Retro Pong with Webcam Body Control</title>
+  <meta name="description" content="Play Pong using your hands or head via webcam. Retro 80s CRT style, 2 players or vs AI. No controller needed.">
+  <meta name="author" content="YoanDev & Sons">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="HumanPong — Retro Pong with Webcam Body Control">
+  <meta property="og:description" content="Play Pong using your hands or head via webcam. Retro 80s CRT style, 2 players or vs AI. No controller needed.">
+  <meta property="og:image" content="https://humanpong.yoandev.co/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="HumanPong — Retro neon Pong game controlled by webcam">
+  <meta property="og:site_name" content="HumanPong">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HumanPong — Retro Pong with Webcam Body Control">
+  <meta name="twitter:description" content="Play Pong using your hands or head via webcam. Retro 80s CRT style, 2 players or vs AI. No controller needed.">
+  <meta name="twitter:image" content="https://humanpong.yoandev.co/og.png">
+  <meta name="twitter:image:alt" content="HumanPong — Retro neon Pong game controlled by webcam">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global webcam + hand overlay -->
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="hand-canvas"></canvas>
+
+  <!-- Main menu -->
+  <div id="menu-screen" class="screen active">
+    <h1 class="title glow">HUMAN<br>PONG</h1>
+    <p class="subtitle">Webcam body control</p>
+
+    <div class="menu-section">
+      <p class="menu-label">2 PLAYERS</p>
+      <button id="btn-2players" class="btn-retro">Both Hands</button>
+    </div>
+
+    <div class="menu-section">
+      <p class="menu-label">VS COMPUTER</p>
+      <div class="menu-row">
+        <button id="btn-vs-ai" class="btn-retro btn-half">Hand</button>
+        <button id="btn-head" class="btn-retro btn-half">Head</button>
+      </div>
+    </div>
+
+    <button id="btn-fullscreen" class="btn-fullscreen">FULLSCREEN</button>
+
+    <p class="hint">Control paddles with your hand or head movement.<br>Press F for fullscreen &middot; ESC to quit</p>
+
+    <a href="https://yoandev.co" target="_blank" rel="noopener" class="menu-footer">YoanDev & Sons</a>
+  </div>
+
+  <!-- Calibration screen -->
+  <div id="calibration-screen" class="screen">
+    <div id="calib-ui">
+      <p class="calib-title glow" id="calib-title">Show your hands</p>
+      <div class="calib-hands">
+        <div class="calib-hand" id="calib-left">
+          <div class="calib-reticle">
+            <div class="reticle-corner tl"></div>
+            <div class="reticle-corner tr"></div>
+            <div class="reticle-corner bl"></div>
+            <div class="reticle-corner br"></div>
+            <span class="calib-icon">&#9995;</span>
+          </div>
+          <span class="calib-label">Left hand</span>
+          <span class="calib-status" id="calib-left-status">SCANNING...</span>
+        </div>
+        <div class="calib-hand" id="calib-right">
+          <div class="calib-reticle">
+            <div class="reticle-corner tl"></div>
+            <div class="reticle-corner tr"></div>
+            <div class="reticle-corner bl"></div>
+            <div class="reticle-corner br"></div>
+            <span class="calib-icon">&#9995;</span>
+          </div>
+          <span class="calib-label">Right hand</span>
+          <span class="calib-status" id="calib-right-status">SCANNING...</span>
+        </div>
+        <div class="calib-hand" id="calib-head" style="display:none">
+          <div class="calib-reticle">
+            <div class="reticle-corner tl"></div>
+            <div class="reticle-corner tr"></div>
+            <div class="reticle-corner bl"></div>
+            <div class="reticle-corner br"></div>
+            <span class="calib-icon">&#128100;</span>
+          </div>
+          <span class="calib-label">Head</span>
+          <span class="calib-status" id="calib-head-status">SCANNING...</span>
+        </div>
+      </div>
+      <p class="calib-hint" id="calib-hint">Waiting for detection...</p>
+    </div>
+  </div>
+
+  <!-- Game screen -->
+  <div id="game-screen" class="screen">
+    <canvas id="game-canvas"></canvas>
+  </div>
+
+  <!-- Pause overlay -->
+  <div id="pause-overlay">
+    <div id="pause-ui">
+      <p class="pause-title glow">PAUSED</p>
+      <p class="pause-text" id="pause-text">Hand lost! Show your hand again...</p>
+      <p class="pause-hint" id="pause-hint">SCANNING...</p>
+    </div>
+  </div>
+
+  <!-- End screen -->
+  <div id="end-screen" class="screen">
+    <h2 class="title glow" id="winner-text">Player 1 wins!</h2>
+    <p class="final-score" id="final-score">11 - 5</p>
+    <div class="menu-buttons">
+      <button id="btn-replay" class="btn-retro">Replay</button>
+      <button id="btn-menu" class="btn-retro">Menu</button>
+    </div>
+  </div>
+
+  <!-- CRT overlays -->
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
