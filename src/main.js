@@ -170,13 +170,17 @@ async function startGame(mode) {
   showScreen(calibScreen);
   showCam();
 
-  // Camera permission dialog may kick us out of fullscreen — remember state
+  // Exit fullscreen before requesting camera so permission dialog is visible
   wasFullscreen = isFullscreen();
+  if (wasFullscreen) {
+    exitFullscreen();
+    await new Promise((r) => setTimeout(r, 300));
+  }
 
   await initCurrentTracking();
 
-  // Re-enter fullscreen after camera permission is granted
-  if (wasFullscreen && !isFullscreen()) {
+  // Camera is ready — re-enter fullscreen
+  if (wasFullscreen) {
     enterFullscreen();
   }
 
