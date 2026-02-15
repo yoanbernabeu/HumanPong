@@ -1,4 +1,4 @@
-import { FaceDetection } from '@mediapipe/face_detection';
+import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const SMOOTHING_FRAMES = 5;
 const Y_MIN = 0.15;
@@ -6,59 +6,48 @@ const Y_MAX = 0.85;
 const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const FRAME_INTERVAL = IS_MOBILE ? 50 : 33;
 
-let faceDetection = null;
+let faceDetector = null;
 let headPosition = null;
 let smoothBuffer = [];
-let isReady = false;
 let sendingFrames = false;
 let videoEl = null;
 let lastResults = null;
 let lastFrameTime = 0;
 
-export function initHeadTracking(videoElement) {
-  return new Promise((resolve, reject) => {
-    videoEl = videoElement;
+export async function initHeadTracking(videoElement) {
+  videoEl = videoElement;
 
-    faceDetection = new FaceDetection({
-      locateFile: (file) => `/mediapipe/face_detection/${file}`,
-    });
+  const vision = await FilesetResolver.forVisionTasks('/mediapipe/wasm');
 
-    faceDetection.setOptions({
-      model: 'short',
-      minDetectionConfidence: 0.4,
-    });
-
-    faceDetection.onResults(onFaceResults);
-
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const videoConstraints = {
-      facingMode: 'user',
-      width: { ideal: isMobile ? 480 : 640 },
-      height: { ideal: isMobile ? 360 : 480 },
-    };
-
-    navigator.mediaDevices
-      .getUserMedia({ video: videoConstraints })
-      .then((stream) => {
-        videoElement.srcObject = stream;
-        videoElement.onloadeddata = () => {
-          isReady = true;
-          sendingFrames = true;
-          sendFrame();
-          resolve();
-        };
-        // iOS Safari needs explicit play after srcObject assignment
-        videoElement.play().catch(() => {});
-      })
-      .catch((err) => {
-        console.error('Webcam error:', err);
-        reject(err);
-      });
+  faceDetector = await FaceDetector.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.task',
+      delegate: 'GPU',
+    },
+    runningMode: 'VIDEO',
+    minDetectionConfidence: 0.4,
   });
+
+  const videoConstraints = {
+    facingMode: 'user',
+    width: { ideal: IS_MOBILE ? 480 : 640 },
+    height: { ideal: IS_MOBILE ? 360 : 480 },
+  };
+
+  const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+  videoElement.srcObject = stream;
+  await new Promise((resolve) => {
+    videoElement.onloadeddata = resolve;
+  });
+  videoElement.play().catch(() => {});
+
+  sendingFrames = true;
+  sendFrame();
 }
 
-async function sendFrame() {
-  if (!sendingFrames || !videoEl || !faceDetection) return;
+function sendFrame() {
+  if (!sendingFrames || !videoEl || !faceDetector) return;
 
   const now = performance.now();
   if (now - lastFrameTime < FRAME_INTERVAL) {
@@ -68,7 +57,8 @@ async function sendFrame() {
   lastFrameTime = now;
 
   try {
-    await faceDetection.send({ image: videoEl });
+    const results = faceDetector.detectForVideo(videoEl, now);
+    processResults(results);
   } catch (e) {
     // Ignore occasional errors
   }
@@ -78,8 +68,13 @@ async function sendFrame() {
   }
 }
 
-function onFaceResults(results) {
-  lastResults = results;
+function processResults(results) {
+  // Convert keypoints to legacy "landmarks" format for drawing code in main.js
+  lastResults = {
+    detections: results.detections?.map((d) => ({
+      landmarks: d.keypoints,
+    })),
+  };
 
   if (!results.detections || results.detections.length === 0) {
     headPosition = null;
@@ -87,7 +82,8 @@ function onFaceResults(results) {
     return;
   }
 
-  const nose = results.detections[0].landmarks[2];
+  // Keypoint 2 = nose tip
+  const nose = results.detections[0].keypoints[2];
   headPosition = smoothPosition(nose.y);
 }
 
@@ -121,6 +117,5 @@ export function stopHeadTracking() {
 
   headPosition = null;
   smoothBuffer = [];
-  isReady = false;
   lastResults = null;
 }

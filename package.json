@@ -9,8 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mediapipe/hands": "^0.4.1675469240",
-    "@mediapipe/face_detection": "^0.4.1646425229"
+    "@mediapipe/tasks-vision": "^0.10.32"
   },
   "devDependencies": {
     "vite": "^6.0.0",

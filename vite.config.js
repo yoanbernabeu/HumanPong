@@ -6,12 +6,8 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: 'node_modules/@mediapipe/hands/*',
-          dest: 'mediapipe/hands',
-        },
-        {
-          src: 'node_modules/@mediapipe/face_detection/*',
-          dest: 'mediapipe/face_detection',
+          src: 'node_modules/@mediapipe/tasks-vision/wasm/*',
+          dest: 'mediapipe/wasm',
         },
       ],
     }),

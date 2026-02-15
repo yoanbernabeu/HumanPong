@@ -1,4 +1,4 @@
-import { Hands } from '@mediapipe/hands';
+import { HandLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const SMOOTHING_FRAMES = 5;
 const Y_MIN = 0.08;
@@ -6,61 +6,51 @@ const Y_MAX = 0.92;
 const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const FRAME_INTERVAL = IS_MOBILE ? 50 : 33;
 
-let hands = null;
+let handLandmarker = null;
 let handPositions = [null, null];
 let smoothBuffers = [[], []];
-let isReady = false;
 let sendingFrames = false;
 let videoEl = null;
 let lastResults = null;
 let lastFrameTime = 0;
 
-export function initHandTracking(videoElement) {
-  return new Promise((resolve, reject) => {
-    videoEl = videoElement;
+export async function initHandTracking(videoElement) {
+  videoEl = videoElement;
 
-    hands = new Hands({
-      locateFile: (file) => `/mediapipe/hands/${file}`,
-    });
+  const vision = await FilesetResolver.forVisionTasks('/mediapipe/wasm');
 
-    hands.setOptions({
-      maxNumHands: 2,
-      modelComplexity: 0,
-      minDetectionConfidence: 0.4,
-      minTrackingConfidence: 0.3,
-    });
-
-    hands.onResults(onHandResults);
-
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const videoConstraints = {
-      facingMode: 'user',
-      width: { ideal: isMobile ? 480 : 640 },
-      height: { ideal: isMobile ? 360 : 480 },
-    };
-
-    navigator.mediaDevices
-      .getUserMedia({ video: videoConstraints })
-      .then((stream) => {
-        videoElement.srcObject = stream;
-        videoElement.onloadeddata = () => {
-          isReady = true;
-          sendingFrames = true;
-          sendFrame();
-          resolve();
-        };
-        // iOS Safari needs explicit play after srcObject assignment
-        videoElement.play().catch(() => {});
-      })
-      .catch((err) => {
-        console.error('Webcam error:', err);
-        reject(err);
-      });
+  handLandmarker = await HandLandmarker.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+      delegate: 'GPU',
+    },
+    numHands: 2,
+    runningMode: 'VIDEO',
+    minHandDetectionConfidence: 0.4,
+    minHandPresenceConfidence: 0.3,
+    minTrackingConfidence: 0.3,
   });
+
+  const videoConstraints = {
+    facingMode: 'user',
+    width: { ideal: IS_MOBILE ? 480 : 640 },
+    height: { ideal: IS_MOBILE ? 360 : 480 },
+  };
+
+  const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+  videoElement.srcObject = stream;
+  await new Promise((resolve) => {
+    videoElement.onloadeddata = resolve;
+  });
+  videoElement.play().catch(() => {});
+
+  sendingFrames = true;
+  sendFrame();
 }
 
-async function sendFrame() {
-  if (!sendingFrames || !videoEl || !hands) return;
+function sendFrame() {
+  if (!sendingFrames || !videoEl || !handLandmarker) return;
 
   const now = performance.now();
   if (now - lastFrameTime < FRAME_INTERVAL) {
@@ -70,7 +60,8 @@ async function sendFrame() {
   lastFrameTime = now;
 
   try {
-    await hands.send({ image: videoEl });
+    const results = handLandmarker.detectForVideo(videoEl, now);
+    processResults(results);
   } catch (e) {
     // Ignore occasional errors
   }
@@ -80,29 +71,24 @@ async function sendFrame() {
   }
 }
 
-function onHandResults(results) {
-  lastResults = results;
+function processResults(results) {
+  // Convert to legacy-compatible format for drawing code in main.js
+  lastResults = {
+    multiHandLandmarks: results.landmarks,
+    multiHandedness: results.handedness?.map((h) => ({ label: h[0]?.categoryName })),
+  };
 
   let leftHand = null;
   let rightHand = null;
 
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-    if (results.multiHandLandmarks.length === 1) {
-      const wrist = results.multiHandLandmarks[0][0];
-      const handedness = results.multiHandedness[0].label;
+  if (results.landmarks && results.landmarks.length > 0) {
+    for (let i = 0; i < results.landmarks.length; i++) {
+      const wrist = results.landmarks[i][0];
+      const handedness = results.handedness[i]?.[0]?.categoryName;
       if (handedness === 'Right') {
         leftHand = wrist;
       } else {
         rightHand = wrist;
-      }
-    } else if (results.multiHandLandmarks.length >= 2) {
-      for (let i = 0; i < results.multiHandedness.length; i++) {
-        const wrist = results.multiHandLandmarks[i][0];
-        if (results.multiHandedness[i].label === 'Right') {
-          leftHand = wrist;
-        } else {
-          rightHand = wrist;
-        }
       }
     }
   }
@@ -152,6 +138,5 @@ export function stopHandTracking() {
 
   handPositions = [null, null];
   smoothBuffers = [[], []];
-  isReady = false;
   lastResults = null;
 }
