@@ -6,14 +6,14 @@ import { playWallBounce, playPaddleBounce, playScore, playStart } from './sound.
 
 const WINNING_SCORE = 11;
 
-// Dimensions relative to screen height (proportional scaling)
+// Paddle dimensions scale with height, speed scales with width
 function paddleHeight() { return Math.round(canvas.height * 0.15); }
 function paddleWidth() { return Math.max(8, Math.round(canvas.height * 0.018)); }
 function paddleMargin() { return Math.max(10, Math.round(canvas.width * 0.015)); }
 function ballRadius() { return Math.max(5, Math.round(canvas.height * 0.012)); }
-function ballInitialSpeed() { return Math.max(3, canvas.height * 0.007); }
-function ballSpeedIncrement() { return canvas.height * 0.0004; }
-function ballMaxSpeed() { return canvas.height * 0.017; }
+function ballInitialSpeed() { return Math.max(3.5, canvas.width * 0.004); }
+function ballSpeedIncrement() { return canvas.width * 0.00025; }
+function ballMaxSpeed() { return canvas.width * 0.009; }
 
 let canvas, ctx;
 let gameState = null;

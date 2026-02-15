@@ -5,7 +5,7 @@ let errorOffset = 0;
 let errorTimer = 0;
 
 export function updateAI(ball, paddle, canvasHeight) {
-  const aiMaxSpeed = canvasHeight * 0.007;
+  const aiMaxSpeed = canvasHeight * 0.012;
   const aiErrorMargin = canvasHeight * 0.04;
 
   errorTimer++;
