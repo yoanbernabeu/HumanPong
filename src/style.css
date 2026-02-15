@@ -257,17 +257,34 @@ body {
 .menu-footer {
   position: absolute;
   bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.menu-footer a {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.45rem;
   color: #333;
   text-decoration: none;
   letter-spacing: 1px;
   transition: color 0.2s;
+  display: flex;
+  align-items: center;
 }
 
-.menu-footer:hover {
+.menu-footer a:hover {
   color: #0f0;
   text-shadow: 0 0 6px rgba(0, 255, 0, 0.4);
+}
+
+.menu-footer svg {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.menu-footer a:hover svg {
+  opacity: 1;
 }
 
 /* Menu background canvas */
