@@ -30,15 +30,17 @@ function drawCenterLine(ctx, canvas) {
 }
 
 function drawScore(ctx, canvas, score1, score2) {
-  ctx.font = '48px "Press Start 2P"';
+  const fontSize = Math.max(20, Math.round(canvas.height * 0.07));
+  ctx.font = `${fontSize}px "Press Start 2P"`;
   ctx.fillStyle = NEON_GREEN;
   ctx.textAlign = 'center';
 
   ctx.shadowColor = NEON_GREEN;
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = Math.round(fontSize * 0.4);
 
-  ctx.fillText(String(score1), canvas.width / 4, 70);
-  ctx.fillText(String(score2), (canvas.width / 4) * 3, 70);
+  const topY = fontSize + Math.round(canvas.height * 0.03);
+  ctx.fillText(String(score1), canvas.width / 4, topY);
+  ctx.fillText(String(score2), (canvas.width / 4) * 3, topY);
 
   ctx.shadowBlur = 0;
 }
@@ -77,12 +79,13 @@ export function renderCountdown(ctx, canvas, count) {
 
   drawCenterLine(ctx, canvas);
 
-  ctx.font = '80px "Press Start 2P"';
+  const fontSize = Math.max(30, Math.round(canvas.height * 0.12));
+  ctx.font = `${fontSize}px "Press Start 2P"`;
   ctx.fillStyle = NEON_GREEN;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.shadowColor = NEON_GREEN;
-  ctx.shadowBlur = 30;
+  ctx.shadowBlur = Math.round(fontSize * 0.4);
 
   ctx.fillText(String(count), canvas.width / 2, canvas.height / 2);
 

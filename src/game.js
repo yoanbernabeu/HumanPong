@@ -5,13 +5,15 @@ import { renderGame, renderCountdown } from './render.js';
 import { playWallBounce, playPaddleBounce, playScore, playStart } from './sound.js';
 
 const WINNING_SCORE = 11;
-const PADDLE_WIDTH = 12;
-const PADDLE_HEIGHT = 100;
-const PADDLE_MARGIN = 20;
-const BALL_RADIUS = 8;
-const BALL_INITIAL_SPEED = 5;
-const BALL_SPEED_INCREMENT = 0.3;
-const BALL_MAX_SPEED = 12;
+
+// Dimensions relative to screen height (proportional scaling)
+function paddleHeight() { return Math.round(canvas.height * 0.15); }
+function paddleWidth() { return Math.max(8, Math.round(canvas.height * 0.018)); }
+function paddleMargin() { return Math.max(10, Math.round(canvas.width * 0.015)); }
+function ballRadius() { return Math.max(5, Math.round(canvas.height * 0.012)); }
+function ballInitialSpeed() { return Math.max(3, canvas.height * 0.007); }
+function ballSpeedIncrement() { return canvas.height * 0.0004; }
+function ballMaxSpeed() { return canvas.height * 0.017; }
 
 let canvas, ctx;
 let gameState = null;
@@ -42,26 +44,32 @@ function resizeCanvas() {
 }
 
 function resetGameState() {
+  const ph = paddleHeight();
+  const pw = paddleWidth();
+  const pm = paddleMargin();
+  const br = ballRadius();
+  const bs = ballInitialSpeed();
+
   gameState = {
     ball: {
       x: canvas.width / 2,
       y: canvas.height / 2,
-      vx: BALL_INITIAL_SPEED * (Math.random() > 0.5 ? 1 : -1),
-      vy: (Math.random() - 0.5) * BALL_INITIAL_SPEED,
-      radius: BALL_RADIUS,
-      speed: BALL_INITIAL_SPEED,
+      vx: bs * (Math.random() > 0.5 ? 1 : -1),
+      vy: (Math.random() - 0.5) * bs,
+      radius: br,
+      speed: bs,
     },
     paddle1: {
-      x: PADDLE_MARGIN,
-      y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-      width: PADDLE_WIDTH,
-      height: PADDLE_HEIGHT,
+      x: pm,
+      y: canvas.height / 2 - ph / 2,
+      width: pw,
+      height: ph,
     },
     paddle2: {
-      x: canvas.width - PADDLE_MARGIN - PADDLE_WIDTH,
-      y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-      width: PADDLE_WIDTH,
-      height: PADDLE_HEIGHT,
+      x: canvas.width - pm - pw,
+      y: canvas.height / 2 - ph / 2,
+      width: pw,
+      height: ph,
     },
     score1: 0,
     score2: 0,
@@ -134,7 +142,7 @@ function updatePaddles() {
 }
 
 function clampPaddle(y) {
-  return Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, y));
+  return Math.max(0, Math.min(canvas.height - gameState.paddle1.height, y));
 }
 
 function updateBall() {
@@ -185,7 +193,7 @@ function bounceBallOffPaddle(paddle, directionX) {
   const relativeHit = (ball.y - paddle.y) / paddle.height;
   const angle = (relativeHit - 0.5) * (Math.PI / 3);
 
-  ball.speed = Math.min(ball.speed + BALL_SPEED_INCREMENT, BALL_MAX_SPEED);
+  ball.speed = Math.min(ball.speed + ballSpeedIncrement(), ballMaxSpeed());
 
   ball.vx = directionX * ball.speed * Math.cos(angle);
   ball.vy = ball.speed * Math.sin(angle);
@@ -225,13 +233,14 @@ function onScored() {
     return;
   }
 
+  const bs = ballInitialSpeed();
   gameState.ball.x = canvas.width / 2;
   gameState.ball.y = canvas.height / 2;
-  gameState.ball.speed = BALL_INITIAL_SPEED;
+  gameState.ball.speed = bs;
 
   const dir = gameState.ball.vx > 0 ? -1 : 1;
-  gameState.ball.vx = BALL_INITIAL_SPEED * dir;
-  gameState.ball.vy = (Math.random() - 0.5) * BALL_INITIAL_SPEED;
+  gameState.ball.vx = bs * dir;
+  gameState.ball.vy = (Math.random() - 0.5) * bs;
 }
 
 export function pauseGame() {
