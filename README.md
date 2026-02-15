@@ -2,9 +2,7 @@
 
 A retro 80s-style Pong game where you control the paddles with your body using your webcam. No controllers needed — just your hands or your head.
 
-![Retro CRT Style](https://img.shields.io/badge/style-retro%20CRT-green?style=flat-square)
-![Vanilla JS](https://img.shields.io/badge/vanilla-JS-yellow?style=flat-square)
-![MediaPipe](https://img.shields.io/badge/powered%20by-MediaPipe-blue?style=flat-square)
+![Human Pong](./public/og.png)
 
 ## Game Modes
 

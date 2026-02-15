@@ -3,6 +3,7 @@ import { initHandTracking, stopHandTracking, getHandPositions, getLastResults } 
 import { initHeadTracking, stopHeadTracking, getHeadPosition, getLastHeadResults } from './head.js';
 import { initGame, stopGame, pauseGame, resumeGame, isGamePaused, isGameRunning } from './game.js';
 import { resumeAudio, playWin, playLock } from './sound.js';
+import { startMenuBg, stopMenuBg } from './menu-bg.js';
 
 // Screens
 const menuScreen = document.getElementById('menu-screen');
@@ -20,6 +21,7 @@ const btnReplay = document.getElementById('btn-replay');
 const btnMenu = document.getElementById('btn-menu');
 
 // Elements
+const menuCanvas = document.getElementById('menu-canvas');
 const canvas = document.getElementById('game-canvas');
 const webcam = document.getElementById('webcam');
 const handCanvas = document.getElementById('hand-canvas');
@@ -123,6 +125,7 @@ async function startGame(mode) {
   currentMode = mode;
   calibrationAborted = false;
   resumeAudio();
+  stopMenuBg();
 
   calibLeft.classList.remove('detected', 'locked');
   calibRight.classList.remove('detected', 'locked');
@@ -590,6 +593,7 @@ function goToMenu() {
   hideCam();
   handCtx.clearRect(0, 0, handCanvas.width, handCanvas.height);
   showScreen(menuScreen);
+  startMenuBg(menuCanvas);
 }
 
 // -- Replay --
@@ -625,3 +629,6 @@ document.addEventListener('keydown', (e) => {
     toggleFullscreen();
   }
 });
+
+// Start menu background animation
+startMenuBg(menuCanvas);

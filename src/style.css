@@ -48,6 +48,69 @@ body {
     0 0 80px #0a0;
 }
 
+/* Glitch effect on menu title */
+#menu-screen .title {
+  position: relative;
+  animation: title-flicker 4s ease-in-out infinite;
+}
+
+#menu-screen .title::before,
+#menu-screen .title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-spacing: 100vw;
+}
+
+#menu-screen .title::before {
+  color: #0ff;
+  text-shadow: 0 0 10px #0ff;
+  animation: glitch-top 3s ease-in-out infinite;
+  clip-path: inset(0 0 60% 0);
+}
+
+#menu-screen .title::after {
+  color: #f0f;
+  text-shadow: 0 0 10px #f0f;
+  animation: glitch-bottom 2.5s ease-in-out infinite;
+  clip-path: inset(60% 0 0 0);
+  opacity: 0;
+}
+
+@keyframes title-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+@keyframes glitch-top {
+  0%, 100% { transform: translate(0); }
+  85% { transform: translate(0); }
+  86% { transform: translate(-3px, -1px); }
+  87% { transform: translate(0); }
+  91% { transform: translate(0); }
+  92% { transform: translate(2px, 1px); }
+  93% { transform: translate(0); }
+}
+
+@keyframes glitch-bottom {
+  0%, 100% { transform: translate(0); opacity: 0; }
+  78% { transform: translate(0); opacity: 0; }
+  79% { transform: translate(3px, 1px); opacity: 0.6; }
+  80% { transform: translate(0); opacity: 0; }
+  94% { transform: translate(0); opacity: 0; }
+  95% { transform: translate(-2px, -1px); opacity: 0.6; }
+  96% { transform: translate(0); opacity: 0; }
+}
+
 .subtitle {
   font-size: 0.8rem;
   color: #0f0;
@@ -114,6 +177,23 @@ body {
   transform: scale(0.96);
 }
 
+/* Idle pulse on menu buttons */
+#menu-screen .btn-retro {
+  animation: btn-idle-pulse 3s ease-in-out infinite;
+}
+
+#menu-screen .btn-retro:nth-child(1) { animation-delay: 0s; }
+#menu-screen .btn-retro:nth-child(2) { animation-delay: 0.5s; }
+
+@keyframes btn-idle-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(0, 255, 0, 0); border-color: #0f0; }
+  50% { box-shadow: 0 0 12px rgba(0, 255, 0, 0.2); border-color: #0f0; }
+}
+
+#menu-screen .btn-retro:hover {
+  animation: none;
+}
+
 .btn-fullscreen {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.55rem;
@@ -155,6 +235,17 @@ body {
 .menu-footer:hover {
   color: #0f0;
   text-shadow: 0 0 6px rgba(0, 255, 0, 0.4);
+}
+
+/* Menu background canvas */
+#menu-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Global webcam + hand canvas (hidden by default) */
