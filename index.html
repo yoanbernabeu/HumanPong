@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>HumanPong — Retro Pong with Webcam Body Control</title>
   <meta name="description" content="Play Pong using your hands or head via webcam. Retro 80s CRT style, 2 players or vs AI. No controller needed.">
   <meta name="author" content="YoanDev & Sons">
@@ -56,7 +56,8 @@
 
     <button id="btn-fullscreen" class="btn-fullscreen">FULLSCREEN</button>
 
-    <p class="hint">Control paddles with your hand or head movement.<br>Press F for fullscreen &middot; ESC to quit</p>
+    <p class="hint">Control paddles with your hand or head movement.</p>
+    <p class="hint hint-desktop">Press F for fullscreen &middot; ESC to quit</p>
 
     <a href="https://yoandev.co" target="_blank" rel="noopener" class="menu-footer">YoanDev & Sons</a>
   </div>
@@ -126,6 +127,13 @@
       <button id="btn-replay" class="btn-retro">Replay</button>
       <button id="btn-menu" class="btn-retro">Menu</button>
     </div>
+  </div>
+
+  <!-- Rotate device overlay (mobile portrait) -->
+  <div id="rotate-overlay">
+    <p class="rotate-icon">&#128241;</p>
+    <p class="rotate-text">Rotate your device</p>
+    <p class="rotate-hint">Landscape mode required</p>
   </div>
 
   <!-- CRT overlays -->

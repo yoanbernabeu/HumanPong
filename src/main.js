@@ -94,10 +94,16 @@ function stopCurrentTracking() {
 
 // -- Fullscreen --
 function toggleFullscreen() {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
+  const el = document.documentElement;
+  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+
+  if (isFullscreen) {
+    (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
   } else {
-    document.documentElement.requestFullscreen().catch(() => {});
+    const requestFs = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (requestFs) {
+      requestFs.call(el).catch(() => {});
+    }
   }
 }
 

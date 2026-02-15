@@ -3,7 +3,8 @@ import { FaceDetection } from '@mediapipe/face_detection';
 const SMOOTHING_FRAMES = 5;
 const Y_MIN = 0.15;
 const Y_MAX = 0.85;
-const FRAME_INTERVAL = 33;
+const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const FRAME_INTERVAL = IS_MOBILE ? 50 : 33;
 
 let faceDetection = null;
 let headPosition = null;
@@ -29,8 +30,15 @@ export function initHeadTracking(videoElement) {
 
     faceDetection.onResults(onFaceResults);
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const videoConstraints = {
+      facingMode: 'user',
+      width: { ideal: isMobile ? 480 : 640 },
+      height: { ideal: isMobile ? 360 : 480 },
+    };
+
     navigator.mediaDevices
-      .getUserMedia({ video: { width: 640, height: 480 } })
+      .getUserMedia({ video: videoConstraints })
       .then((stream) => {
         videoElement.srcObject = stream;
         videoElement.onloadeddata = () => {
@@ -39,6 +47,8 @@ export function initHeadTracking(videoElement) {
           sendFrame();
           resolve();
         };
+        // iOS Safari needs explicit play after srcObject assignment
+        videoElement.play().catch(() => {});
       })
       .catch((err) => {
         console.error('Webcam error:', err);

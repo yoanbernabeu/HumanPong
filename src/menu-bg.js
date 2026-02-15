@@ -14,7 +14,8 @@ const PADDLE_MARGIN = 16;
 const BALL_R = 6;
 const BALL_SPEED = 3;
 const AI_SPEED = 2.5;
-const PARTICLE_COUNT = 35;
+const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const PARTICLE_COUNT = IS_MOBILE ? 15 : 35;
 
 // -- Particles --
 function createParticle() {

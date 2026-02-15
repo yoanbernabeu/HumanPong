@@ -11,6 +11,12 @@ body {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Screens */
@@ -21,6 +27,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -71,6 +78,7 @@ body {
   color: #0ff;
   text-shadow: 0 0 10px #0ff;
   animation: glitch-top 3s ease-in-out infinite;
+  -webkit-clip-path: inset(0 0 60% 0);
   clip-path: inset(0 0 60% 0);
 }
 
@@ -78,6 +86,7 @@ body {
   color: #f0f;
   text-shadow: 0 0 10px #f0f;
   animation: glitch-bottom 2.5s ease-in-out infinite;
+  -webkit-clip-path: inset(60% 0 0 0);
   clip-path: inset(60% 0 0 0);
   opacity: 0;
 }
@@ -223,7 +232,7 @@ body {
 
 .menu-footer {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   font-family: 'Press Start 2P', monospace;
   font-size: 0.45rem;
   color: #333;
@@ -457,6 +466,7 @@ body.cam-visible #hand-canvas {
   left: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   z-index: 50;
   justify-content: center;
   align-items: center;
@@ -540,6 +550,51 @@ body.cam-visible #hand-canvas {
   z-index: 99;
 }
 
+/* Rotate device overlay */
+#rotate-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.rotate-icon {
+  font-size: 3rem;
+  animation: rotate-wobble 2s ease-in-out infinite;
+}
+
+@keyframes rotate-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(90deg); }
+  75% { transform: rotate(90deg); }
+}
+
+.rotate-text {
+  font-size: 0.9rem;
+  color: #0f0;
+  text-shadow: 0 0 10px #0f0;
+}
+
+.rotate-hint {
+  font-size: 0.5rem;
+  color: #555;
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  #rotate-overlay {
+    display: flex;
+  }
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .title {
@@ -577,5 +632,9 @@ body.cam-visible #hand-canvas {
 
   .pause-title {
     font-size: 1.4rem;
+  }
+
+  .hint-desktop {
+    display: none;
   }
 }
